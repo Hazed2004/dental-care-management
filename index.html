@@ -68,19 +68,62 @@
       <!-- Sidebar Navigation -->
       <div class="w-1/5 p-4 bg-gray-800 border-r border-gray-700 min-h-screen transition-all duration-300">
         <ul class="menu bg-gray-800 p-2 rounded-box shadow-md">
-          <li><a href="#" data-section="patients" class="hover:bg-gray-700" onclick="showAdminSection('patients')">Patients</a></li>
-          <li><a href="#" data-section="doctors" class="hover:bg-gray-700" onclick="showAdminSection('doctors')">Doctors</a></li>
-          <li><a href="#" data-section="appointments" class="hover:bg-gray-700" onclick="showAdminSection('appointments')">Appointments</a></li>
-          <li><a href="#" data-section="medicine" class="hover:bg-gray-700" onclick="showAdminSection('medicine')">Medicine Stock</a></li>
-          <li><a href="#" data-section="employees" class="hover:bg-gray-700" onclick="showAdminSection('employees')">Employees</a></li>
-          <li><a href="#" data-section="feedback" class="hover:bg-gray-700" onclick="showAdminSection('feedback')">Feedback</a></li>
-          <li><a href="#" data-section="about" class="hover:bg-gray-700" onclick="showAdminSection('about')">About Us</a></li>
+          <li>
+            <a href="#" data-section="home" class="hover:bg-gray-700" onclick="showAdminSection('home')">Home</a>
+          </li>
+          <li>
+            <a href="#" data-section="patients" class="hover:bg-gray-700" onclick="showAdminSection('patients')">Patients</a>
+          </li>
+          <li>
+            <a href="#" data-section="doctors" class="hover:bg-gray-700" onclick="showAdminSection('doctors')">Doctors</a>
+          </li>
+          <li>
+            <a href="#" data-section="appointments" class="hover:bg-gray-700" onclick="showAdminSection('appointments')">Appointments</a>
+          </li>
+          <li>
+            <a href="#" data-section="medicine" class="hover:bg-gray-700" onclick="showAdminSection('medicine')">Medicine Stock</a>
+          </li>
+          <li>
+            <a href="#" data-section="employees" class="hover:bg-gray-700" onclick="showAdminSection('employees')">Employees</a>
+          </li>
+          <li>
+            <a href="#" data-section="treatments" class="hover:bg-gray-700" onclick="showAdminSection('treatments')">Treatments</a>
+          </li>
         </ul>
       </div>
       <!-- Content Area -->
       <div class="w-4/5 p-6 bg-gray-900">
+        <!-- Home Section (Feedback & About Us) -->
+        <div id="section-home" class="admin-section">
+          <h2 class="text-3xl font-bold mb-6">Welcome to the Dental Admin Dashboard</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- About Us Card -->
+            <div class="card bg-gray-800 shadow-xl">
+              <figure>
+                <img src="https://files.catbox.moe/etja4s.jpeg" alt="Dental Clinic" class="object-cover h-48 w-full" />
+              </figure>
+              <div class="card-body">
+                <h3 class="card-title">About Us</h3>
+                <p>
+                  Our Dental Care Management System is designed to streamline clinic operations—from managing patient records and appointments to tracking medicine stocks and employee details.
+                </p>
+              </div>
+            </div>
+            <!-- Feedback Card -->
+            <div class="card bg-gray-800 shadow-xl">
+              <figure>
+                <img src="https://files.catbox.moe/btxiy7.jpeg" alt="Happy Smile" class="object-cover h-48 w-full" />
+              </figure>
+              <div class="card-body">
+                <h3 class="card-title">Feedback</h3>
+                <p>"This system is very intuitive and user-friendly!"</p>
+                <p>"I love how smooth the UI is. It makes managing our dental clinic a breeze!"</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- Patients Section -->
-        <div id="section-patients" class="admin-section">
+        <div id="section-patients" class="admin-section hidden">
           <h2 class="text-3xl font-bold mb-6">Patients</h2>
           <button id="add-patient-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('patients', -1)">Add New Patient</button>
           <div id="patients-table-container" class="overflow-x-auto"></div>
@@ -109,51 +152,11 @@
           <button id="add-employee-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('employees', -1)">Add New Employee</button>
           <div id="employees-table-container" class="overflow-x-auto"></div>
         </div>
-        <!-- Feedback Section -->
-        <div id="section-feedback" class="admin-section hidden">
-          <h2 class="text-3xl font-bold mb-6">Feedback</h2>
-          <!-- Static review cards -->
-          <div class="space-y-4">
-            <div class="card bg-gray-700 shadow-xl">
-              <div class="card-body">
-                <h3 class="card-title">John Doe</h3>
-                <p>"This system is very intuitive and user-friendly!"</p>
-                <div class="rating">
-                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
-                </div>
-              </div>
-            </div>
-            <div class="card bg-gray-700 shadow-xl">
-              <div class="card-body">
-                <h3 class="card-title">Jane Smith</h3>
-                <p>"I love how smooth the UI is. It makes managing our dental clinic a breeze!"</p>
-                <div class="rating">
-                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- About Us Section -->
-        <div id="section-about" class="admin-section hidden">
-          <h2 class="text-3xl font-bold mb-6">About Us</h2>
-          <p class="mb-4">
-            Welcome to our Dental Care Management System. Our platform is designed to streamline the daily operations of a dental clinic, making it easier for administrators to manage patient records, appointments, medicine stocks, and staff details.
-          </p>
-          <p class="mb-4">
-            Our mission is to provide a robust and user-friendly system that helps dental care professionals deliver outstanding service to their patients. We believe that efficient management is the key to ensuring high-quality dental care.
-          </p>
-          <p>
-            Thank you for choosing our system. We are constantly working to improve the platform and add new features based on your feedback.
-          </p>
+        <!-- Treatments Section -->
+        <div id="section-treatments" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Available Dental Treatments</h2>
+          <button id="add-treatment-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('treatments', -1)">Add New Treatment</button>
+          <div id="treatments-table-container" class="overflow-x-auto"></div>
         </div>
       </div>
     </div>
@@ -176,7 +179,6 @@
         <ul class="menu bg-gray-800 p-2 rounded-box shadow-md">
           <li><a href="#" data-section="patients" class="hover:bg-gray-700" onclick="showDoctorSection('patients')">Patients</a></li>
           <li><a href="#" data-section="appointments" class="hover:bg-gray-700" onclick="showDoctorSection('appointments')">Appointments</a></li>
-          <!-- Optionally, you can add an "About Us" link here as well -->
           <li><a href="#" data-section="about" class="hover:bg-gray-700" onclick="alert('This system is developed to manage dental care efficiently.')">About Us</a></li>
         </ul>
       </div>
@@ -219,8 +221,8 @@
       localStorage.setItem(key, JSON.stringify(data));
     }
 
-    // Initialize local storage keys if not present
-    const keys = ['patients', 'doctors', 'appointments', 'medicine', 'employees'];
+    // Initialize local storage keys if not present (added 'treatments' here)
+    const keys = ['patients', 'doctors', 'appointments', 'medicine', 'employees', 'treatments'];
     keys.forEach(key => {
       if (!localStorage.getItem(key)) {
         setData(key, []);
@@ -268,12 +270,13 @@
     function showAdminDashboard() {
       document.getElementById('login-page').classList.add('hidden');
       document.getElementById('admin-dashboard').classList.remove('hidden');
-      showAdminSection('patients');
+      showAdminSection('home');  // default to home page
       renderPatientsTable();
       renderDoctorsTable();
       renderAppointmentsTable();
       renderMedicineTable();
       renderEmployeesTable();
+      renderTreatmentsTable();
     }
     function showDoctorDashboard() {
       document.getElementById('login-page').classList.add('hidden');
@@ -293,7 +296,7 @@
       if(section === 'appointments') renderAppointmentsTable();
       if(section === 'medicine') renderMedicineTable();
       if(section === 'employees') renderEmployeesTable();
-      // No extra rendering needed for static sections "feedback" and "about"
+      if(section === 'treatments') renderTreatmentsTable();
     }
     // Doctor Navigation
     function showDoctorSection(section) {
@@ -430,6 +433,27 @@
             <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
           </div>
         `;
+      } else if (section === 'treatments') {
+        data = (index === -1) ? { id:"", name:"", description:"" } : getData('treatments')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Treatment Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">ID</span></label>
+            <input type="text" id="modal-treatment-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Treatment ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" id="modal-treatment-name" class="input input-bordered bg-gray-700" value="${data.name}" placeholder="Treatment Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Description</span></label>
+            <textarea id="modal-treatment-description" class="textarea textarea-bordered bg-gray-700" placeholder="Description">${data.description}</textarea>
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
       }
       document.getElementById("form-modal-box").innerHTML = modalContent;
       document.getElementById("form-modal").classList.add("modal-open");
@@ -494,6 +518,16 @@
         else { employees[modalIndex] = { id, name, role }; }
         setData("employees", employees);
         renderEmployeesTable();
+      } else if (modalSection === 'treatments') {
+        let id = document.getElementById("modal-treatment-id").value.trim();
+        let name = document.getElementById("modal-treatment-name").value.trim();
+        let description = document.getElementById("modal-treatment-description").value.trim();
+        if(!id || !name) { alert("ID and Treatment Name are required"); return; }
+        let treatments = getData("treatments");
+        if(modalIndex === -1) { treatments.push({ id, name, description }); }
+        else { treatments[modalIndex] = { id, name, description }; }
+        setData("treatments", treatments);
+        renderTreatmentsTable();
       }
       closeModal();
     }
@@ -685,6 +719,35 @@
         employees.splice(index, 1);
         setData('employees', employees);
         renderEmployeesTable();
+      }
+    }
+    // Treatments Table
+    function renderTreatmentsTable() {
+      const treatments = getData('treatments');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Description</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      treatments.forEach((treatment, index) => {
+        html += `<tr>
+          <td>${treatment.id}</td>
+          <td>${treatment.name}</td>
+          <td>${treatment.description}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('treatments', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deleteTreatment(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('treatments-table-container').innerHTML = html;
+    }
+    function deleteTreatment(index) {
+      if(confirm('Are you sure you want to delete this treatment?')) {
+        let treatments = getData('treatments');
+        treatments.splice(index, 1);
+        setData('treatments', treatments);
+        renderTreatmentsTable();
       }
     }
   </script>
