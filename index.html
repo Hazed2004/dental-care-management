@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dental Care Management System</title>
+  <!-- DaisyUI and TailwindCSS CDN Links -->
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.23/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom styling for smooth dark mode UI */
+    .custom-card {
+      border: 1px solid #374151; /* gray-700 */
+      transition: all 0.3s ease-in-out;
+    }
+    .modal-open {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white">
+  <!-- Login Page -->
+  <div id="login-page" class="flex items-center justify-center h-screen">
+    <div class="card w-96 bg-gray-800 shadow-2xl custom-card">
+      <div class="card-body">
+        <h2 class="card-title text-center text-3xl font-bold mb-4">Dental Care Management</h2>
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text font-semibold">Login as</span>
+          </label>
+          <select id="role-select" class="select select-bordered bg-gray-700">
+            <option value="admin">Admin</option>
+            <option value="doctor">Doctor</option>
+          </select>
+        </div>
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text font-semibold">Username</span>
+          </label>
+          <input type="text" id="username" placeholder="username" class="input input-bordered bg-gray-700" />
+        </div>
+        <div class="form-control mb-3">
+          <label class="label">
+            <span class="label-text font-semibold">Password</span>
+          </label>
+          <input type="password" id="password" placeholder="password" class="input input-bordered bg-gray-700" />
+        </div>
+        <div class="form-control mt-4">
+          <button id="login-btn" class="btn btn-outline border-white text-white hover:bg-gray-700">Login</button>
+        </div>
+        <p id="login-error" class="text-red-400 text-center mt-2"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" class="hidden">
+    <!-- Navbar -->
+    <div class="navbar bg-gray-900 text-white shadow-lg">
+      <div class="flex-1">
+        <a class="btn btn-ghost normal-case text-xl">Dental Admin Dashboard</a>
+      </div>
+      <div class="flex-none">
+        <button id="admin-logout-btn" class="btn btn-outline border-white text-white hover:bg-gray-700">Logout</button>
+      </div>
+    </div>
+    <div class="flex">
+      <!-- Sidebar Navigation -->
+      <div class="w-1/5 p-4 bg-gray-800 border-r border-gray-700 min-h-screen transition-all duration-300">
+        <ul class="menu bg-gray-800 p-2 rounded-box shadow-md">
+          <li><a href="#" data-section="patients" class="hover:bg-gray-700" onclick="showAdminSection('patients')">Patients</a></li>
+          <li><a href="#" data-section="doctors" class="hover:bg-gray-700" onclick="showAdminSection('doctors')">Doctors</a></li>
+          <li><a href="#" data-section="appointments" class="hover:bg-gray-700" onclick="showAdminSection('appointments')">Appointments</a></li>
+          <li><a href="#" data-section="medicine" class="hover:bg-gray-700" onclick="showAdminSection('medicine')">Medicine Stock</a></li>
+          <li><a href="#" data-section="employees" class="hover:bg-gray-700" onclick="showAdminSection('employees')">Employees</a></li>
+          <li><a href="#" data-section="feedback" class="hover:bg-gray-700" onclick="showAdminSection('feedback')">Feedback</a></li>
+          <li><a href="#" data-section="about" class="hover:bg-gray-700" onclick="showAdminSection('about')">About Us</a></li>
+        </ul>
+      </div>
+      <!-- Content Area -->
+      <div class="w-4/5 p-6 bg-gray-900">
+        <!-- Patients Section -->
+        <div id="section-patients" class="admin-section">
+          <h2 class="text-3xl font-bold mb-6">Patients</h2>
+          <button id="add-patient-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('patients', -1)">Add New Patient</button>
+          <div id="patients-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Doctors Section -->
+        <div id="section-doctors" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Doctors</h2>
+          <button id="add-doctor-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('doctors', -1)">Add New Doctor</button>
+          <div id="doctors-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Appointments Section -->
+        <div id="section-appointments" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Appointments</h2>
+          <button id="add-appointment-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('appointments', -1)">Add New Appointment</button>
+          <div id="appointments-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Medicine Stock Section -->
+        <div id="section-medicine" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Medicine Stock</h2>
+          <button id="add-medicine-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('medicine', -1)">Add New Medicine</button>
+          <div id="medicine-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Employees Section -->
+        <div id="section-employees" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Employees</h2>
+          <button id="add-employee-btn" class="btn btn-outline border-white text-white hover:bg-gray-700 mb-4" onclick="openModal('employees', -1)">Add New Employee</button>
+          <div id="employees-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Feedback Section -->
+        <div id="section-feedback" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Feedback</h2>
+          <!-- Static review cards -->
+          <div class="space-y-4">
+            <div class="card bg-gray-700 shadow-xl">
+              <div class="card-body">
+                <h3 class="card-title">John Doe</h3>
+                <p>"This system is very intuitive and user-friendly!"</p>
+                <div class="rating">
+                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-1" class="mask mask-star-2 bg-orange-400" />
+                </div>
+              </div>
+            </div>
+            <div class="card bg-gray-700 shadow-xl">
+              <div class="card-body">
+                <h3 class="card-title">Jane Smith</h3>
+                <p>"I love how smooth the UI is. It makes managing our dental clinic a breeze!"</p>
+                <div class="rating">
+                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+                  <input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- About Us Section -->
+        <div id="section-about" class="admin-section hidden">
+          <h2 class="text-3xl font-bold mb-6">About Us</h2>
+          <p class="mb-4">
+            Welcome to our Dental Care Management System. Our platform is designed to streamline the daily operations of a dental clinic, making it easier for administrators to manage patient records, appointments, medicine stocks, and staff details.
+          </p>
+          <p class="mb-4">
+            Our mission is to provide a robust and user-friendly system that helps dental care professionals deliver outstanding service to their patients. We believe that efficient management is the key to ensuring high-quality dental care.
+          </p>
+          <p>
+            Thank you for choosing our system. We are constantly working to improve the platform and add new features based on your feedback.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor Dashboard -->
+  <div id="doctor-dashboard" class="hidden">
+    <!-- Navbar -->
+    <div class="navbar bg-gray-900 text-white shadow-lg">
+      <div class="flex-1">
+        <a class="btn btn-ghost normal-case text-xl">Dental Doctor Dashboard</a>
+      </div>
+      <div class="flex-none">
+        <button id="doctor-logout-btn" class="btn btn-outline border-white text-white hover:bg-gray-700">Logout</button>
+      </div>
+    </div>
+    <div class="flex">
+      <!-- Sidebar Navigation -->
+      <div class="w-1/5 p-4 bg-gray-800 border-r border-gray-700 min-h-screen transition-all duration-300">
+        <ul class="menu bg-gray-800 p-2 rounded-box shadow-md">
+          <li><a href="#" data-section="patients" class="hover:bg-gray-700" onclick="showDoctorSection('patients')">Patients</a></li>
+          <li><a href="#" data-section="appointments" class="hover:bg-gray-700" onclick="showDoctorSection('appointments')">Appointments</a></li>
+          <!-- Optionally, you can add an "About Us" link here as well -->
+          <li><a href="#" data-section="about" class="hover:bg-gray-700" onclick="alert('This system is developed to manage dental care efficiently.')">About Us</a></li>
+        </ul>
+      </div>
+      <!-- Content Area -->
+      <div class="w-4/5 p-6 bg-gray-900">
+        <!-- Patients Section -->
+        <div id="doc-section-patients" class="doctor-section">
+          <h2 class="text-3xl font-bold mb-6">Patients</h2>
+          <div id="doc-patients-table-container" class="overflow-x-auto"></div>
+        </div>
+        <!-- Appointments Section -->
+        <div id="doc-section-appointments" class="doctor-section hidden">
+          <h2 class="text-3xl font-bold mb-6">Appointments</h2>
+          <div id="doc-appointments-table-container" class="overflow-x-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Modal (Reused for all CRUD forms) -->
+  <div class="modal" id="form-modal">
+    <div class="modal-box bg-gray-800" id="form-modal-box">
+      <!-- Modal content will be injected here dynamically -->
+    </div>
+  </div>
+
+  <!-- JavaScript Code -->
+  <script>
+    // Global variable to store current user role
+    let currentUserRole = null;
+    // Global variables for modal state
+    let modalSection = "";
+    let modalIndex = -1;
+
+    // Utility functions for localStorage
+    function getData(key) {
+      return JSON.parse(localStorage.getItem(key)) || [];
+    }
+    function setData(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
+    }
+
+    // Initialize local storage keys if not present
+    const keys = ['patients', 'doctors', 'appointments', 'medicine', 'employees'];
+    keys.forEach(key => {
+      if (!localStorage.getItem(key)) {
+        setData(key, []);
+      }
+    });
+
+    // -------------- Login Functionality --------------
+    document.getElementById('login-btn').addEventListener('click', () => {
+      const role = document.getElementById('role-select').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorElem = document.getElementById('login-error');
+      errorElem.textContent = '';
+
+      if (role === 'admin') {
+        if (username === 'admin' && password === 'admin') {
+          currentUserRole = 'admin';
+          showAdminDashboard();
+        } else {
+          errorElem.textContent = 'Invalid admin credentials';
+        }
+      } else if (role === 'doctor') {
+        if (username === 'doctor' && password === 'doctor') {
+          currentUserRole = 'doctor';
+          showDoctorDashboard();
+        } else {
+          errorElem.textContent = 'Invalid doctor credentials';
+        }
+      }
+    });
+
+    // -------------- Logout Functionality --------------
+    document.getElementById('admin-logout-btn')?.addEventListener('click', logout);
+    document.getElementById('doctor-logout-btn')?.addEventListener('click', logout);
+    function logout() {
+      currentUserRole = null;
+      document.getElementById('admin-dashboard').classList.add('hidden');
+      document.getElementById('doctor-dashboard').classList.add('hidden');
+      document.getElementById('login-page').classList.remove('hidden');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // -------------- Show Dashboards --------------
+    function showAdminDashboard() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('admin-dashboard').classList.remove('hidden');
+      showAdminSection('patients');
+      renderPatientsTable();
+      renderDoctorsTable();
+      renderAppointmentsTable();
+      renderMedicineTable();
+      renderEmployeesTable();
+    }
+    function showDoctorDashboard() {
+      document.getElementById('login-page').classList.add('hidden');
+      document.getElementById('doctor-dashboard').classList.remove('hidden');
+      showDoctorSection('patients');
+      renderDocPatientsTable();
+      renderDocAppointmentsTable();
+    }
+
+    // -------------- Navigation --------------
+    // Admin Navigation
+    function showAdminSection(section) {
+      document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('section-' + section).classList.remove('hidden');
+      if(section === 'patients') renderPatientsTable();
+      if(section === 'doctors') renderDoctorsTable();
+      if(section === 'appointments') renderAppointmentsTable();
+      if(section === 'medicine') renderMedicineTable();
+      if(section === 'employees') renderEmployeesTable();
+      // No extra rendering needed for static sections "feedback" and "about"
+    }
+    // Doctor Navigation
+    function showDoctorSection(section) {
+      document.querySelectorAll('.doctor-section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById('doc-section-' + section).classList.remove('hidden');
+      if(section === 'patients') renderDocPatientsTable();
+      if(section === 'appointments') renderDocAppointmentsTable();
+    }
+
+    // -------------- Modal Functions --------------
+    function openModal(section, index) {
+      modalSection = section;
+      modalIndex = index;
+      let data = {};
+      let modalContent = "";
+      if (section === 'patients') {
+        data = (index === -1) ? { id:"", name:"", age:"", contact:"" } : getData('patients')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Patient Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">ID</span></label>
+            <input type="text" id="modal-patient-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Patient ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" id="modal-patient-name" class="input input-bordered bg-gray-700" value="${data.name}" placeholder="Patient Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Age</span></label>
+            <input type="number" id="modal-patient-age" class="input input-bordered bg-gray-700" value="${data.age}" placeholder="Patient Age" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Contact</span></label>
+            <input type="text" id="modal-patient-contact" class="input input-bordered bg-gray-700" value="${data.contact}" placeholder="Patient Contact" />
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
+      } else if (section === 'doctors') {
+        data = (index === -1) ? { id:"", name:"", specialization:"", contact:"" } : getData('doctors')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Doctor Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">ID</span></label>
+            <input type="text" id="modal-doctor-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Doctor ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" id="modal-doctor-name" class="input input-bordered bg-gray-700" value="${data.name}" placeholder="Doctor Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Specialization</span></label>
+            <input type="text" id="modal-doctor-specialization" class="input input-bordered bg-gray-700" value="${data.specialization}" placeholder="Specialization" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Contact</span></label>
+            <input type="text" id="modal-doctor-contact" class="input input-bordered bg-gray-700" value="${data.contact}" placeholder="Contact" />
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
+      } else if (section === 'appointments') {
+        data = (index === -1) ? { id:"", patientId:"", patientName:"", doctorName:"", timing:"" } : getData('appointments')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Appointment Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Appointment ID</span></label>
+            <input type="text" id="modal-appointment-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Appointment ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Patient ID</span></label>
+            <input type="text" id="modal-appointment-patientId" class="input input-bordered bg-gray-700" value="${data.patientId}" placeholder="Patient ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Patient Name</span></label>
+            <input type="text" id="modal-appointment-patientName" class="input input-bordered bg-gray-700" value="${data.patientName}" placeholder="Patient Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Doctor Name</span></label>
+            <input type="text" id="modal-appointment-doctorName" class="input input-bordered bg-gray-700" value="${data.doctorName}" placeholder="Doctor Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Timing</span></label>
+            <input type="text" id="modal-appointment-timing" class="input input-bordered bg-gray-700" value="${data.timing}" placeholder="Timing" />
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
+      } else if (section === 'medicine') {
+        data = (index === -1) ? { id:"", name:"", quantity:"" } : getData('medicine')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Medicine Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">ID</span></label>
+            <input type="text" id="modal-medicine-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Medicine ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" id="modal-medicine-name" class="input input-bordered bg-gray-700" value="${data.name}" placeholder="Medicine Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Quantity</span></label>
+            <input type="number" id="modal-medicine-quantity" class="input input-bordered bg-gray-700" value="${data.quantity}" placeholder="Quantity" />
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
+      } else if (section === 'employees') {
+        data = (index === -1) ? { id:"", name:"", role:"" } : getData('employees')[index];
+        modalContent = `
+          <h3 class="font-bold text-lg mb-4">Employee Details</h3>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">ID</span></label>
+            <input type="text" id="modal-employee-id" class="input input-bordered bg-gray-700" value="${data.id}" placeholder="Employee ID" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Name</span></label>
+            <input type="text" id="modal-employee-name" class="input input-bordered bg-gray-700" value="${data.name}" placeholder="Employee Name" />
+          </div>
+          <div class="form-control mb-3">
+            <label class="label"><span class="label-text">Role</span></label>
+            <input type="text" id="modal-employee-role" class="input input-bordered bg-gray-700" value="${data.role}" placeholder="Role" />
+          </div>
+          <div class="modal-action">
+            <button class="btn btn-outline" onclick="saveModal()">Save</button>
+            <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+          </div>
+        `;
+      }
+      document.getElementById("form-modal-box").innerHTML = modalContent;
+      document.getElementById("form-modal").classList.add("modal-open");
+    }
+    function closeModal() {
+      document.getElementById("form-modal").classList.remove("modal-open");
+    }
+    function saveModal() {
+      if (modalSection === 'patients') {
+        let id = document.getElementById("modal-patient-id").value.trim();
+        let name = document.getElementById("modal-patient-name").value.trim();
+        let age = document.getElementById("modal-patient-age").value.trim();
+        let contact = document.getElementById("modal-patient-contact").value.trim();
+        if(!id || !name) { alert("ID and Name are required"); return; }
+        let patients = getData("patients");
+        if(modalIndex === -1) { patients.push({ id, name, age, contact }); }
+        else { patients[modalIndex] = { id, name, age, contact }; }
+        setData("patients", patients);
+        renderPatientsTable();
+        renderDocPatientsTable();
+      } else if (modalSection === 'doctors') {
+        let id = document.getElementById("modal-doctor-id").value.trim();
+        let name = document.getElementById("modal-doctor-name").value.trim();
+        let specialization = document.getElementById("modal-doctor-specialization").value.trim();
+        let contact = document.getElementById("modal-doctor-contact").value.trim();
+        if(!id || !name) { alert("ID and Name are required"); return; }
+        let doctors = getData("doctors");
+        if(modalIndex === -1) { doctors.push({ id, name, specialization, contact }); }
+        else { doctors[modalIndex] = { id, name, specialization, contact }; }
+        setData("doctors", doctors);
+        renderDoctorsTable();
+      } else if (modalSection === 'appointments') {
+        let id = document.getElementById("modal-appointment-id").value.trim();
+        let patientId = document.getElementById("modal-appointment-patientId").value.trim();
+        let patientName = document.getElementById("modal-appointment-patientName").value.trim();
+        let doctorName = document.getElementById("modal-appointment-doctorName").value.trim();
+        let timing = document.getElementById("modal-appointment-timing").value.trim();
+        if(!id || !patientId || !patientName || !doctorName) { alert("All fields except timing are required"); return; }
+        let appointments = getData("appointments");
+        if(modalIndex === -1) { appointments.push({ id, patientId, patientName, doctorName, timing }); }
+        else { appointments[modalIndex] = { id, patientId, patientName, doctorName, timing }; }
+        setData("appointments", appointments);
+        renderAppointmentsTable();
+        renderDocAppointmentsTable();
+      } else if (modalSection === 'medicine') {
+        let id = document.getElementById("modal-medicine-id").value.trim();
+        let name = document.getElementById("modal-medicine-name").value.trim();
+        let quantity = document.getElementById("modal-medicine-quantity").value.trim();
+        if(!id || !name) { alert("ID and Medicine Name are required"); return; }
+        let medicines = getData("medicine");
+        if(modalIndex === -1) { medicines.push({ id, name, quantity }); }
+        else { medicines[modalIndex] = { id, name, quantity }; }
+        setData("medicine", medicines);
+        renderMedicineTable();
+      } else if (modalSection === 'employees') {
+        let id = document.getElementById("modal-employee-id").value.trim();
+        let name = document.getElementById("modal-employee-name").value.trim();
+        let role = document.getElementById("modal-employee-role").value.trim();
+        if(!id || !name) { alert("ID and Name are required"); return; }
+        let employees = getData("employees");
+        if(modalIndex === -1) { employees.push({ id, name, role }); }
+        else { employees[modalIndex] = { id, name, role }; }
+        setData("employees", employees);
+        renderEmployeesTable();
+      }
+      closeModal();
+    }
+
+    // -------------- Table Rendering Functions --------------
+    // Patients Table (Admin)
+    function renderPatientsTable() {
+      const patients = getData('patients');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Age</th><th>Contact</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      patients.forEach((patient, index) => {
+        html += `<tr>
+          <td>${patient.id}</td>
+          <td>${patient.name}</td>
+          <td>${patient.age}</td>
+          <td>${patient.contact}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('patients', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deletePatient(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('patients-table-container').innerHTML = html;
+    }
+    function deletePatient(index) {
+      if(confirm('Are you sure you want to delete this patient?')) {
+        let patients = getData('patients');
+        patients.splice(index, 1);
+        setData('patients', patients);
+        renderPatientsTable();
+        renderDocPatientsTable();
+      }
+    }
+    // Patients Table (Doctor View)
+    function renderDocPatientsTable() {
+      const patients = getData('patients');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Age</th><th>Contact</th></tr>
+        </thead><tbody>`;
+      patients.forEach(patient => {
+        html += `<tr>
+          <td>${patient.id}</td>
+          <td>${patient.name}</td>
+          <td>${patient.age}</td>
+          <td>${patient.contact}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('doc-patients-table-container').innerHTML = html;
+    }
+    // Doctors Table
+    function renderDoctorsTable() {
+      const doctors = getData('doctors');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Specialization</th><th>Contact</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      doctors.forEach((doctor, index) => {
+        html += `<tr>
+          <td>${doctor.id}</td>
+          <td>${doctor.name}</td>
+          <td>${doctor.specialization}</td>
+          <td>${doctor.contact}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('doctors', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deleteDoctor(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('doctors-table-container').innerHTML = html;
+    }
+    function deleteDoctor(index) {
+      if(confirm('Are you sure you want to delete this doctor?')) {
+        let doctors = getData('doctors');
+        doctors.splice(index, 1);
+        setData('doctors', doctors);
+        renderDoctorsTable();
+      }
+    }
+    // Appointments Table (Admin)
+    function renderAppointmentsTable() {
+      const appointments = getData('appointments');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Patient ID</th><th>Patient Name</th><th>Doctor Name</th><th>Timing</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      appointments.forEach((appt, index) => {
+        html += `<tr>
+          <td>${appt.id}</td>
+          <td>${appt.patientId}</td>
+          <td>${appt.patientName}</td>
+          <td>${appt.doctorName}</td>
+          <td>${appt.timing}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('appointments', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deleteAppointment(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('appointments-table-container').innerHTML = html;
+    }
+    function deleteAppointment(index) {
+      if(confirm('Are you sure you want to delete this appointment?')) {
+        let appointments = getData('appointments');
+        appointments.splice(index, 1);
+        setData('appointments', appointments);
+        renderAppointmentsTable();
+        renderDocAppointmentsTable();
+      }
+    }
+    // Appointments Table (Doctor View)
+    function renderDocAppointmentsTable() {
+      const appointments = getData('appointments');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Patient ID</th><th>Patient Name</th><th>Doctor Name</th><th>Timing</th></tr>
+        </thead><tbody>`;
+      appointments.forEach(appt => {
+        html += `<tr>
+          <td>${appt.id}</td>
+          <td>${appt.patientId}</td>
+          <td>${appt.patientName}</td>
+          <td>${appt.doctorName}</td>
+          <td>${appt.timing}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('doc-appointments-table-container').innerHTML = html;
+    }
+    // Medicine Table
+    function renderMedicineTable() {
+      const medicines = getData('medicine');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Quantity</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      medicines.forEach((med, index) => {
+        html += `<tr>
+          <td>${med.id}</td>
+          <td>${med.name}</td>
+          <td>${med.quantity}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('medicine', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deleteMedicine(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('medicine-table-container').innerHTML = html;
+    }
+    function deleteMedicine(index) {
+      if(confirm('Are you sure you want to delete this medicine?')) {
+        let medicines = getData('medicine');
+        medicines.splice(index, 1);
+        setData('medicine', medicines);
+        renderMedicineTable();
+      }
+    }
+    // Employees Table
+    function renderEmployeesTable() {
+      const employees = getData('employees');
+      let html = `<table class="table table-zebra w-full transition-all duration-300">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Role</th><th>Actions</th></tr>
+        </thead><tbody>`;
+      employees.forEach((emp, index) => {
+        html += `<tr>
+          <td>${emp.id}</td>
+          <td>${emp.name}</td>
+          <td>${emp.role}</td>
+          <td>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700 mr-2" onclick="openModal('employees', ${index})">Edit</button>
+            <button class="btn btn-sm btn-outline border-white text-white hover:bg-gray-700" onclick="deleteEmployee(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('employees-table-container').innerHTML = html;
+    }
+    function deleteEmployee(index) {
+      if(confirm('Are you sure you want to delete this employee?')) {
+        let employees = getData('employees');
+        employees.splice(index, 1);
+        setData('employees', employees);
+        renderEmployeesTable();
+      }
+    }
+  </script>
+</body>
+</html>
